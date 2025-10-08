@@ -1,0 +1,7 @@
+README.md
+PLAN.md
+.git
+.gitignore
+*.md
+!Dockerfile
+

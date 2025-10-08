@@ -1,0 +1,21 @@
+services:
+  mcp-proxy-vnc:
+    build: .
+    image: mcp-proxy-vnc:latest
+    container_name: mcp-proxy-vnc
+    ports:
+      - "5900:5900"  # VNC
+      - "8000:8000"  # Supergateway HTTP
+    restart: unless-stopped
+    # 增加共享内存大小，浏览器需要
+    shm_size: '2gb'
+    environment:
+      - DISPLAY=:0
+      # Model configuration (uncomment and modify as needed)
+      - MODEL_PROVIDER=ollama          # openai, anthropic, google, azure, ollama
+      - MODEL_NAME=mistral-samll:3.2         # Model name
+      # - OPENAI_API_KEY=your-key-here   # API key
+      - BASE_URL=http://10.7.0.22:11434  # Custom API endpoint (optional)
+    stdin_open: true
+    tty: true
+
