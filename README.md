@@ -130,6 +130,44 @@ curl http://localhost:8000
 |------|--------|------|
 | DISPLAY | :0 | X11 显示编号 |
 
+## MCP 服务器类型选择
+
+本镜像支持两种 MCP 服务器类型，通过 `MCP_SERVER_TYPE` 环境变量选择：
+
+| 类型 | 说明 | 特点 |
+|------|------|------|
+| `browser-use` (默认) | browser-use[cli] | 基础浏览器自动化，轻量级 |
+| `mcp-browser-use` | [mcp-browser-use](https://github.com/Saik0s/mcp-browser-use) | 更丰富的工具集，支持截图分析、状态持久化 |
+
+### 功能对比
+
+| 特性 | browser-use | mcp-browser-use |
+|------|-------------|-----------------|
+| 自然语言控制 | ✅ | ✅ |
+| 截图分析 | ❌ | ✅ |
+| 状态持久化 | ❌ | ✅ |
+| 多标签页管理 | 基础 | 完善 |
+| MCP 工具数量 | 较少 | 更多 |
+
+### 切换 MCP 服务器类型
+
+**方式 1: 修改 docker-compose.yml**
+
+```yaml
+environment:
+  - MCP_SERVER_TYPE=mcp-browser-use  # 或 browser-use
+```
+
+**方式 2: 使用 docker run 命令**
+
+```bash
+docker run -d \
+  -p 5900:5900 \
+  -p 8000:8000 \
+  -e MCP_SERVER_TYPE=mcp-browser-use \
+  mcp-proxy-vnc
+```
+
 ## 配置 Browser-Use 模型
 
 默认使用 OpenAI 的 `gpt-4o-mini` 模型。你可以通过环境变量配置使用不同的模型。

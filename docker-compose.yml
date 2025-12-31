@@ -4,18 +4,65 @@ services:
     image: mcp-proxy-vnc:latest
     container_name: mcp-proxy-vnc
     ports:
-      - "5900:5900"  # VNC
-      - "8000:8000"  # Supergateway HTTP
+      - "5901:5900"  # VNC
+      - "8383:8383"  # mcp-server-browser-use HTTP/SSE (默认端口)
+      - "8000:8000"  # browser-use via supergateway (备用)
+      - "8931:8931"  # playwright-mcp HTTP/SSE
+      - "8400:8400"  # desktop-commander HTTP/SSE (终端/文件系统控制)
     restart: unless-stopped
     # 增加共享内存大小，浏览器需要
     shm_size: '2gb'
+    # 允许 Chromium 沙箱正常运行
+    security_opt:
+      - seccomp:unconfined
+    cap_add:
+      - SYS_ADMIN
     environment:
+      - TZ=Asia/Shanghai
       - DISPLAY=:0
-      # Model configuration (uncomment and modify as needed)
-      - MODEL_PROVIDER=ollama          # openai, anthropic, google, azure, ollama
-      - MODEL_NAME=mistral-samll:3.2         # Model name
-      # - OPENAI_API_KEY=your-key-here   # API key
-      - BASE_URL=http://10.7.0.22:11434  # Custom API endpoint (optional)
+      # MCP Server Type: browser-use, mcp-browser-use, playwright-mcp, nothing
+      # browser-use: 基础浏览器自动化 (需要 supergateway, 端口 8000)
+      # mcp-browser-use: 更丰富的工具集，内置 HTTP/SSE (端口 8383)，需要 LLM
+      # playwright-mcp: 微软官方，纯工具模式，不需要 LLM (端口 8931) ✅ 推荐
+      - MCP_SERVER_TYPE=playwright-mcp
+      # ===== DesktopCommanderMCP 配置 (独立服务，可与上述任意模式并行) =====
+      # 终端控制、文件系统搜索、diff编辑，端口 8400
+      - DESKTOP_COMMANDER_ENABLED=true
+      - DESKTOP_COMMANDER_PORT=8400
+      # 传输协议: streamableHttp (推荐) 或 sse
+      # streamableHttp 端点: http://host:8400/mcp
+      # sse 端点: http://host:8400/sse
+      - DESKTOP_COMMANDER_TRANSPORT=streamableHttp
+      # ===== playwright-mcp 配置 (MCP_SERVER_TYPE=playwright-mcp) =====
+      # 不需要 LLM 配置！LLM 在客户端 (ABM-LLM) 调用工具
+      - PLAYWRIGHT_HOST=0.0.0.0
+      - PLAYWRIGHT_PORT=8931
+      - PLAYWRIGHT_HEADLESS=false
+      # ===== mcp-server-browser-use 配置 (MCP_SERVER_TYPE=mcp-browser-use) =====
+      # 配置参考: https://github.com/Saik0s/mcp-browser-use
+      # 环境变量格式: MCP_ + section + _ + key (如 MCP_LLM_PROVIDER)
+      # LLM Provider: openai, anthropic, google, azure_openai, ollama, groq, deepseek 等
+      - MCP_LLM_PROVIDER=ollama
+      # LLM Model name
+      - MCP_LLM_MODEL_NAME=mistral-small:3.2
+      # LLM Base URL (用于 ollama 或自定义 API)
+      - MCP_LLM_BASE_URL=http://10.7.0.22:11434
+      # Browser 配置
+      - MCP_BROWSER_HEADLESS=false
+      # Server 配置 - 绑定到 0.0.0.0 以便容器外访问
+      - MCP_SERVER_HOST=0.0.0.0
+      - MCP_SERVER_PORT=8383
+      # 日志级别 (DEBUG, INFO, WARNING, ERROR)
+      - MCP_SERVER_LOGGING_LEVEL=DEBUG
+      # API Keys (根据 provider 选择设置)
+      - MCP_LLM_API_KEY=ollama-no-key-needed
+      # - OPENAI_API_KEY=your-key-here
+      # - ANTHROPIC_API_KEY=your-key-here
+      # - GEMINI_API_KEY=your-key-here
+      # ===== browser-use[cli] 配置 (MCP_SERVER_TYPE=browser-use)=
+      - MODEL_PROVIDER=ollama
+      - MODEL_NAME=mistral-small:3.2
+      - BASE_URL=http://10.7.0.22:11434
     stdin_open: true
     tty: true
 

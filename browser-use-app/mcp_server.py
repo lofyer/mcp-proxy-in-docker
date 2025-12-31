@@ -132,7 +132,7 @@ except ImportError as e:
 if __name__ == "__main__":
     try:
         # Set the LLM as environment variable for browser-use CLI
-        # The browser-use CLI will use this LLM instance
+        #  browser-use CLI will use this LLM instance
         os.environ["BROWSER_USE_LLM_PROVIDER"] = MODEL_PROVIDER
         os.environ["BROWSER_USE_LLM_MODEL"] = MODEL_NAME
         
@@ -153,4 +153,3 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"✗ Error starting MCP server: {e}", file=sys.stderr)
         sys.exit(1)
-
