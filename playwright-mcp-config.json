@@ -1,0 +1,30 @@
+{
+  "browser": {
+    "browserName": "firefox",
+    "launchOptions": {
+      "firefoxUserPrefs": {
+        "security.tls.version.min": 1,
+        "security.ssl.enable_ocsp_stapling": false,
+        "security.ssl.enable_ocsp_must_staple": false,
+        "security.OCSP.enabled": 0,
+        "security.cert_pinning.enforcement_level": 0,
+        "security.mixed_content.block_active_content": false,
+        "security.mixed_content.block_display_content": false,
+        "network.stricttransportsecurity.preloadlist": false,
+        "security.enterprise_roots.enabled": true,
+        "dom.security.https_only_mode": false,
+        "dom.security.https_only_mode_ever_enabled": false,
+        "browser.ssl_override_behavior": 1,
+        "security.insecure_field_warning.contextual.enabled": false,
+        "security.insecure_connection_text.enabled": false,
+        "javascript.options.strict": false,
+        "javascript.options.werror": false,
+        "dom.max_script_run_time": 0,
+        "dom.max_chrome_script_run_time": 0,
+        "browser.tabs.remote.autostart": false,
+        "network.http.connection-timeout": 90,
+        "network.http.response.timeout": 300
+      }
+    }
+  }
+}

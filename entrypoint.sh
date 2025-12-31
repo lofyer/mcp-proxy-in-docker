@@ -130,7 +130,8 @@ case $MCP_SERVER_TYPE in
     
     # 构建命令行参数
     # --ignore-https-errors: 忽略 SSL 证书错误，信任所有证书
-    CMD_ARGS="--port ${PLAYWRIGHT_PORT} --host ${PLAYWRIGHT_HOST} --browser ${PLAYWRIGHT_BROWSER} --user-data-dir ${PLAYWRIGHT_USER_DATA_DIR} --ignore-https-errors"
+    # --config: 使用配置文件设置 Firefox 容错参数 (禁用严格 SSL/TLS 检查、延长超时等)
+    CMD_ARGS="--port ${PLAYWRIGHT_PORT} --host ${PLAYWRIGHT_HOST} --browser ${PLAYWRIGHT_BROWSER} --user-data-dir ${PLAYWRIGHT_USER_DATA_DIR} --ignore-https-errors --config /app/playwright-mcp-config.json"
     if [ "${PLAYWRIGHT_HEADLESS}" = "true" ]; then
       CMD_ARGS="${CMD_ARGS} --headless"
     fi

@@ -184,7 +184,8 @@ RUN $UV_PROJECT_ENVIRONMENT/bin/playwright install chromium
 # 将虚拟环境添加到 PATH
 ENV PATH="$UV_PROJECT_ENVIRONMENT/bin:$PATH"
 
-# 复制启动脚本 (放在最后，便于修改时快速重建)
+# 复制配置文件和启动脚本 (放在最后，便于修改时快速重建)
+COPY playwright-mcp-config.json /app/playwright-mcp-config.json
 COPY entrypoint.sh /entrypoint.sh
 RUN sudo chmod +x /entrypoint.sh
 
